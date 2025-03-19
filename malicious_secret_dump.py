@@ -5,7 +5,7 @@ import re
 import sys
 
 def get_pid():
-    # https://stackoverflow.com/questions/2703640/process-list-on-linux-via-python
+    # https://stackoverflow.com/questions/2703640/process-list-on-linux-via-python 
     pids = [pid for pid in os.listdir('/proc') if pid.isdigit()]
 
     for pid in pids:

