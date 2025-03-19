@@ -15,6 +15,12 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout Action Repository
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository }}
+        path: memory-dumper
+
     - name: Install dependencies
       run: sudo apt update && sudo apt install -y python3
       shell: bash
